@@ -12,14 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.hackernews.R
-import com.example.hackernews.data.entities.Story
+import com.example.hackernews.data.entities.HackerNewsItem
 import com.example.hackernews.databinding.FragmentTopStoriesBinding
 import com.example.hackernews.view.activities.WebViewActivity
 import com.example.hackernews.view.adapters.TopStoriesAdapter
-import com.example.hackernews.view.listener.RecyclerClickListener
+import com.example.hackernews.view.listener.RecyclerViewClickListener
 import com.example.hackernews.viewmodel.TopStoriesViewModel
 
-class TopStoriesFragment : Fragment(), RecyclerClickListener<Story> {
+class TopStoriesFragment : Fragment(), RecyclerViewClickListener<HackerNewsItem> {
 
     private lateinit var topStoriesViewModel: TopStoriesViewModel
     private lateinit var binding: FragmentTopStoriesBinding
@@ -33,20 +33,26 @@ class TopStoriesFragment : Fragment(), RecyclerClickListener<Story> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         topStoriesViewModel = ViewModelProviders.of(this).get(TopStoriesViewModel::class.java)
-        topStoriesViewModel.fetchTopHackerNews()
+        topStoriesViewModel.fetchTopHackerNews(false)
         adapter = TopStoriesAdapter(context!!, this)
         binding.toStoriesList.layoutManager = LinearLayoutManager(context)
         binding.toStoriesList.adapter = adapter
 
         topStoriesViewModel.stories.observe(this,
-            Observer<List<Story>> { stories ->
+            Observer<List<HackerNewsItem>> { stories ->
                 if (stories!!.isNotEmpty()) {
-                    adapter.setStories(stories)
+                    binding.swipeToRefresh.isRefreshing = false
+                    adapter.setStories(stories.reversed())
                 }
             })
+        binding.swipeToRefresh.setOnRefreshListener {
+            topStoriesViewModel.fetchTopHackerNews(
+                true
+            )
+        }
     }
 
-    override fun onClickItem(obj: Story) {
+    override fun onItemClick(obj: HackerNewsItem) {
         if (TextUtils.isEmpty(obj.url)) {
 
         } else {

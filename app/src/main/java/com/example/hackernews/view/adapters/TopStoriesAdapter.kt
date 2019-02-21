@@ -9,16 +9,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.hackernews.R
-import com.example.hackernews.data.entities.Story
+import com.example.hackernews.data.entities.HackerNewsItem
 import com.example.hackernews.databinding.ItemStoriesListBinding
-import com.example.hackernews.repositories.StoryRepository
-import com.example.hackernews.view.listener.RecyclerClickListener
+import com.example.hackernews.repositories.HackerNewsItemRepository
+import com.example.hackernews.utils.CommonUtils
+import com.example.hackernews.view.listener.RecyclerViewClickListener
 
-class TopStoriesAdapter(private val context: Context, private val recyclerClickListener: RecyclerClickListener<Story>) :
+class TopStoriesAdapter(
+    private val context: Context,
+    private val recyclerClickListener: RecyclerViewClickListener<HackerNewsItem>
+) :
     RecyclerView.Adapter<TopStoriesAdapter.TopStoriesViewHolder>() {
 
-    private var stories = emptyList<Story>()
-    private val storyRepository: StoryRepository = StoryRepository(context)
+    private var stories = emptyList<HackerNewsItem>()
+    private val hackerNewsItemRepository: HackerNewsItemRepository = HackerNewsItemRepository(context)
+    private var alreadyRequestedItem: MutableList<Int> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopStoriesViewHolder {
         return TopStoriesViewHolder(
@@ -36,25 +41,33 @@ class TopStoriesAdapter(private val context: Context, private val recyclerClickL
     override fun onBindViewHolder(holder: TopStoriesViewHolder, postion: Int) {
         val story = stories.get(postion)
         if (!TextUtils.isEmpty(story.title)) {
-            if(TextUtils.isEmpty(story.url)){
+            if (TextUtils.isEmpty(story.url)) {
                 Log.d("StoryWithoutUrl", story.title)
             }
             holder.binding.title.text = story.title
+            holder.binding.score.text = story.score.toString()
+            var comments = 0
+            if (story.kids?.size != null) {
+                comments = story.kids!!.size
+            }
+            holder.binding.info.text =
+                String.format("${story.time?.let { CommonUtils.getTimeAgo(it) }} | by ${story.by}")
             holder.binding.progressBar.visibility = View.INVISIBLE
-            holder.binding.root.setOnClickListener { recyclerClickListener.onClickItem(story) }
-        } else {
+            holder.binding.root.setOnClickListener { recyclerClickListener.onItemClick(story) }
+        } else if (!alreadyRequestedItem.contains(story.id)) {
             holder.binding.root.setOnClickListener(null)
-            storyRepository.fetchStoryDetail(story.id)
+            hackerNewsItemRepository.fetchStoryDetail(story.id)
             holder.binding.title.text = context.getString(R.string.string_loading)
             holder.binding.progressBar.visibility = View.VISIBLE
+            alreadyRequestedItem.add(story.id)
         }
     }
 
     inner class TopStoriesViewHolder(val binding: ItemStoriesListBinding) : RecyclerView.ViewHolder(binding.root) {
     }
 
-    fun setStories(stories: List<Story>) {
-        this.stories = stories
+    fun setStories(hackerNewsItems: List<HackerNewsItem>) {
+        this.stories = hackerNewsItems
         notifyDataSetChanged()
     }
 }
