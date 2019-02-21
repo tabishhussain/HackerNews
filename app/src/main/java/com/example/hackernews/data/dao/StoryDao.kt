@@ -7,7 +7,7 @@ import com.example.hackernews.data.entities.Story
 @Dao
 interface StoryDao {
 
-    @Query("select * from ${Story.TABLE_NAME} order by ${Story.STORY_TIME} desc")
+    @Query("select * from ${Story.TABLE_NAME}")
     fun getAllStories(): LiveData<List<Story>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
