@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Hacker News</string>
-    <string name="string_loading">Loading...</string>
+    <string name="string_loading">Loading…</string>
     <string name="label_comments">Comments</string>
     <string name="empty_comment_list_message">No Comments Found</string>
     <string name="label_replies">Replies</string>
+
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="label_splash_screen">HACKER\nNEWS</string>
 </resources>

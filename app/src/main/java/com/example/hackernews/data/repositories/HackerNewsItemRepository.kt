@@ -1,6 +1,7 @@
 package com.example.hackernews.data.repositories
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.util.Log
 import com.example.hackernews.data.HackerNewsDatabase
@@ -22,10 +23,12 @@ class HackerNewsItemRepository(private val context: Context) {
     private val hackerNewsDataBase: HackerNewsDatabase = HackerNewsDatabase.getDatabase(context)
     private val hackerNewsItemDao: HackerNewsItemDao
     private val topStories: LiveData<List<HackerNewsItem>>
+    public val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         hackerNewsItemDao = hackerNewsDataBase.storyDao()
         topStories = hackerNewsItemDao.getAllStories()
+        isLoading.value = false
     }
 
     fun getCommentsForItem(id: Int): LiveData<List<HackerNewsItem>> {
@@ -43,14 +46,17 @@ class HackerNewsItemRepository(private val context: Context) {
     fun fetchTopHackerNews(forceRefresh: Boolean) {
         val cacheTime = SharedPreferenceUtils.getStoryCacheTime(context)
         if (forceRefresh || System.currentTimeMillis() - cacheTime > CACHE_DURATION) {
+            isLoading.value = true
             hackerNewsService.fetchTopHackerNews(object : ResponseCallback<List<Int>> {
 
                 override fun onError(error: String) {
                     Log.d(TAG, error)
+                    isLoading.value = false
                 }
 
                 override fun onSuccess(result: List<Int>?) {
                     Log.d(TAG, result.toString())
+                    isLoading.value = false
                     if (result!!.isNotEmpty()) {
                         insertStories(result)
                         SharedPreferenceUtils.setStoryCacheTime(context, System.currentTimeMillis())

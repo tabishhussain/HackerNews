@@ -39,6 +39,8 @@ class TopStoriesFragment : Fragment(), RecyclerViewClickListener<HackerNewsItem>
         binding.toStoriesList.layoutManager = LinearLayoutManager(context)
         binding.toStoriesList.adapter = adapter
 
+        topStoriesViewModel.isLoading().observe(this,
+            Observer<Boolean> { isLoading -> binding.swipeToRefresh.isRefreshing = isLoading!! })
         topStoriesViewModel.stories.observe(this,
             Observer<List<HackerNewsItem>> { stories ->
                 if (stories!!.isNotEmpty()) {

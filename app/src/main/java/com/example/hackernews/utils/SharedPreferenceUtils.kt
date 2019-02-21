@@ -8,7 +8,7 @@ class SharedPreferenceUtils {
 
     companion object {
 
-        private const val PREF_STORY_CACHE = "PREF_STORY_CACHE"
+        private const val PREF_STORY_CACHE = "PREF_STORY_CACHE_TIME"
 
         fun setStoryCacheTime(context: Context, time: Long) {
             val sharedPreferences: SharedPreferences = context.defaultSharedPreferences
