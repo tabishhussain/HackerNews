@@ -1,4 +1,4 @@
-package com.example.hackernews.repositories
+package com.example.hackernews.data.repositories
 
 import android.arch.lifecycle.LiveData
 import android.content.Context
@@ -26,6 +26,14 @@ class HackerNewsItemRepository(private val context: Context) {
     init {
         hackerNewsItemDao = hackerNewsDataBase.storyDao()
         topStories = hackerNewsItemDao.getAllStories()
+    }
+
+    fun getCommentsForItem(id: Int): LiveData<List<HackerNewsItem>> {
+        return hackerNewsItemDao.getCommentsForItem(id)
+    }
+
+    fun getItemDetail(itemId: Int): LiveData<HackerNewsItem> {
+        return hackerNewsItemDao.getItemDetail(itemId)
     }
 
     fun topStories(): LiveData<List<HackerNewsItem>> {
@@ -78,6 +86,7 @@ class HackerNewsItemRepository(private val context: Context) {
 
     fun insertStoryDetail(hackerNewsItem: HackerNewsItem) {
         doAsync {
+            hackerNewsItem.kidCount = hackerNewsItem.kids?.size
             hackerNewsItemDao.update(hackerNewsItem)
             hackerNewsItem.kids?.forEach {
                 hackerNewsItemDao.insert(HackerNewsItem(it, "comment", hackerNewsItem.id))

@@ -14,10 +14,11 @@ import android.view.ViewGroup
 import com.example.hackernews.R
 import com.example.hackernews.data.entities.HackerNewsItem
 import com.example.hackernews.databinding.FragmentTopStoriesBinding
+import com.example.hackernews.view.activities.ItemDetailActivity
 import com.example.hackernews.view.activities.WebViewActivity
 import com.example.hackernews.view.adapters.TopStoriesAdapter
 import com.example.hackernews.view.listener.RecyclerViewClickListener
-import com.example.hackernews.viewmodel.TopStoriesViewModel
+import com.example.hackernews.view.viewmodel.TopStoriesViewModel
 
 class TopStoriesFragment : Fragment(), RecyclerViewClickListener<HackerNewsItem> {
 
@@ -53,12 +54,14 @@ class TopStoriesFragment : Fragment(), RecyclerViewClickListener<HackerNewsItem>
     }
 
     override fun onItemClick(obj: HackerNewsItem) {
+        val intent: Intent
         if (TextUtils.isEmpty(obj.url)) {
-
+            intent = Intent(this.context, ItemDetailActivity::class.java)
+            intent.putExtra(ItemDetailActivity.EXTRA_ITEM_ID, obj.id)
         } else {
-            val intent = Intent(this.context, WebViewActivity::class.java)
+            intent = Intent(this.context, WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.EXTRA_URL, obj.url)
-            startActivity(intent)
         }
+        startActivity(intent)
     }
 }

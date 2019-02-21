@@ -54,7 +54,20 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/title"
-                    tools:text="4 Comments | 24 hours Ago | by tabishhussain" />
+                    tools:text="24 hours Ago | by tabishhussain" />
+
+                <TextView
+                    android:id="@+id/view_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@color/color_secondary_text"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title"
+                    android:text="View Replies" />
 
 
             </android.support.constraint.ConstraintLayout>

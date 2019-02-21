@@ -30,6 +30,8 @@ class HackerNewsItem(
     var parent: Int?,
     @ColumnInfo(name = HACKER_NEWS_ITEM_TEXT)
     var text: String?,
+    @ColumnInfo(name = HACKER_NEWS_KID_COUNT)
+    var kidCount: Int?,
     @Ignore
     var kids: List<Int>?
 
@@ -46,14 +48,15 @@ class HackerNewsItem(
         const val HACKER_NEWS_ITEM_URL = "hacker_news_item_url"
         const val HACKER_NEWS_ITEM_PARENT = "hacker_news_item_parent"
         const val HACKER_NEWS_ITEM_TEXT = "hacker_news_item_text"
+        const val HACKER_NEWS_KID_COUNT = "hacker_news_kid_count"
     }
 
     override fun toString(): String {
         return "HackerNewsItem(by='$by', descendants=$descendants, id=$id, kids=$kids, score=$score, time=$time, title='$title', type='$type', url=$url)"
     }
 
-    constructor() : this(-1, null, -1, -1, null, null, null, null, null, null, null)
+    constructor() : this(-1, null, -1, -1, null, null, null, null, null, null, 0, null)
 
     @Ignore
-    constructor(id: Int, type: String, parent: Int?) : this(id, null, null, null, null, null, type, null, parent, null, null)
+    constructor(id: Int, type: String, parent: Int?) : this(id, null, null, null, null, null, type, null, parent, null, 0, null)
 }

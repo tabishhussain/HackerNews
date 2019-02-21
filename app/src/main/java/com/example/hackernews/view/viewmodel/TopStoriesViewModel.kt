@@ -1,14 +1,15 @@
-package com.example.hackernews.viewmodel
+package com.example.hackernews.view.viewmodel
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import com.example.hackernews.data.entities.HackerNewsItem
-import com.example.hackernews.repositories.HackerNewsItemRepository
+import com.example.hackernews.data.repositories.HackerNewsItemRepository
 
 class TopStoriesViewModel(application: Application) : AndroidViewModel(application) {
 
-    val hackerNewsItemRepository: HackerNewsItemRepository = HackerNewsItemRepository(application)
+    private val hackerNewsItemRepository: HackerNewsItemRepository =
+        HackerNewsItemRepository(application)
     val stories: LiveData<List<HackerNewsItem>> = hackerNewsItemRepository.topStories()
 
     fun fetchTopHackerNews(forceRefresh : Boolean) {

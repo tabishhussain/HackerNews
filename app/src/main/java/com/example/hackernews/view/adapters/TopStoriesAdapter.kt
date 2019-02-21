@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.hackernews.R
 import com.example.hackernews.data.entities.HackerNewsItem
+import com.example.hackernews.data.repositories.HackerNewsItemRepository
 import com.example.hackernews.databinding.ItemStoriesListBinding
-import com.example.hackernews.repositories.HackerNewsItemRepository
 import com.example.hackernews.utils.CommonUtils
 import com.example.hackernews.view.listener.RecyclerViewClickListener
 
@@ -22,7 +22,8 @@ class TopStoriesAdapter(
     RecyclerView.Adapter<TopStoriesAdapter.TopStoriesViewHolder>() {
 
     private var stories = emptyList<HackerNewsItem>()
-    private val hackerNewsItemRepository: HackerNewsItemRepository = HackerNewsItemRepository(context)
+    private val hackerNewsItemRepository: HackerNewsItemRepository =
+        HackerNewsItemRepository(context)
     private var alreadyRequestedItem: MutableList<Int> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopStoriesViewHolder {
@@ -39,19 +40,16 @@ class TopStoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: TopStoriesViewHolder, postion: Int) {
-        val story = stories.get(postion)
+        val story = stories[postion]
         if (!TextUtils.isEmpty(story.title)) {
             if (TextUtils.isEmpty(story.url)) {
-                Log.d("StoryWithoutUrl", story.title)
+                Log.d("StoryWithoutUrl", story.title + " " + story.kidCount)
             }
             holder.binding.title.text = story.title
             holder.binding.score.text = story.score.toString()
-            var comments = 0
-            if (story.kids?.size != null) {
-                comments = story.kids!!.size
-            }
+            val comments = if (story.kidCount == null) 0 else story.kidCount
             holder.binding.info.text =
-                String.format("${story.time?.let { CommonUtils.getTimeAgo(it) }} | by ${story.by}")
+                String.format("$comments Comments | ${story.time?.let { CommonUtils.getTimeAgo(it) }} | by ${story.by}")
             holder.binding.progressBar.visibility = View.INVISIBLE
             holder.binding.root.setOnClickListener { recyclerClickListener.onItemClick(story) }
         } else if (!alreadyRequestedItem.contains(story.id)) {
@@ -63,8 +61,7 @@ class TopStoriesAdapter(
         }
     }
 
-    inner class TopStoriesViewHolder(val binding: ItemStoriesListBinding) : RecyclerView.ViewHolder(binding.root) {
-    }
+    inner class TopStoriesViewHolder(val binding: ItemStoriesListBinding) : RecyclerView.ViewHolder(binding.root)
 
     fun setStories(hackerNewsItems: List<HackerNewsItem>) {
         this.stories = hackerNewsItems
