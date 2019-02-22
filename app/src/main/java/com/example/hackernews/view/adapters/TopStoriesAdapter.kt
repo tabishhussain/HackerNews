@@ -4,7 +4,6 @@ import android.content.Context
 import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,26 +41,43 @@ class TopStoriesAdapter(
     override fun onBindViewHolder(holder: TopStoriesViewHolder, postion: Int) {
         val story = stories[postion]
         if (!TextUtils.isEmpty(story.title)) {
-            if (TextUtils.isEmpty(story.url)) {
-                Log.d("StoryWithoutUrl", story.title + " " + story.kidCount)
-            }
             holder.binding.title.text = story.title
             holder.binding.score.text = story.score.toString()
             val comments = if (story.kidCount == null) 0 else story.kidCount
             holder.binding.info.text =
                 String.format("$comments Comments | ${story.time?.let { CommonUtils.getTimeAgo(it) }} | by ${story.by}")
-            holder.binding.progressBar.visibility = View.INVISIBLE
+
             holder.binding.root.setOnClickListener { recyclerClickListener.onItemClick(story) }
+            setViewVisibilities(holder.binding, false)
+            holder.binding.storyTypeIndicator.setBackgroundColor(
+                context.getColor(
+                    if (TextUtils.isEmpty(story.url))
+                        android.R.color.holo_green_dark else android.R.color.holo_blue_dark
+                )
+            )
         } else if (!alreadyRequestedItem.contains(story.id)) {
-            holder.binding.root.setOnClickListener(null)
             hackerNewsItemRepository.fetchStoryDetail(story.id)
-            holder.binding.title.text = context.getString(R.string.string_loading)
-            holder.binding.progressBar.visibility = View.VISIBLE
             alreadyRequestedItem.add(story.id)
+
+            holder.binding.root.setOnClickListener(null)
+            holder.binding.title.text = context.getString(R.string.string_loading)
+            setViewVisibilities(holder.binding, true)
         }
     }
 
     inner class TopStoriesViewHolder(val binding: ItemStoriesListBinding) : RecyclerView.ViewHolder(binding.root)
+
+    private fun setViewVisibilities(binding: ItemStoriesListBinding, loading: Boolean) {
+        if (loading) {
+            binding.score.visibility = View.INVISIBLE
+            binding.info.visibility = View.INVISIBLE
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.score.visibility = View.VISIBLE
+            binding.info.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.INVISIBLE
+        }
+    }
 
     fun setStories(hackerNewsItems: List<HackerNewsItem>) {
         this.stories = hackerNewsItems

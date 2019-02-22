@@ -55,18 +55,30 @@ class CommentsAdapter(
             holder.binding.info.text =
                 String.format("${comment.time?.let { CommonUtils.getTimeAgo(it) }} | by ${comment.by}")
             holder.binding.progressBar.visibility = View.INVISIBLE
-
             val replies = if (comment.kidCount == null) 0 else comment.kidCount
-            holder.binding.viewReply.visibility = if (replies == 0) View.GONE else View.VISIBLE
             holder.binding.viewReply.setOnClickListener { recyclerClickListener.onItemClick(comment) }
-
+            setViewVisibilities(holder.binding, false)
+            holder.binding.viewReply.visibility = if (replies == 0) View.GONE else View.VISIBLE
         } else if (!alreadyRequestedItem.contains(comment.id)) {
-            holder.binding.root.setOnClickListener(null)
             hackerNewsItemRepository.fetchStoryDetail(comment.id)
-            holder.binding.title.text = context.getString(R.string.string_loading)
-            holder.binding.progressBar.visibility = View.VISIBLE
-            holder.binding.viewReply.visibility = View.GONE
             alreadyRequestedItem.add(comment.id)
+            holder.binding.root.setOnClickListener(null)
+            holder.binding.title.text = context.getString(R.string.string_loading)
+            setViewVisibilities(holder.binding, true)
+        }
+    }
+
+    private fun setViewVisibilities(binding: ItemCommentListBinding, loading: Boolean) {
+        if (loading) {
+            binding.score.visibility = View.INVISIBLE
+            binding.info.visibility = View.INVISIBLE
+            binding.viewReply.visibility = View.INVISIBLE
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.score.visibility = View.VISIBLE
+            binding.info.visibility = View.VISIBLE
+            binding.viewReply.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.INVISIBLE
         }
     }
 
