@@ -1,8 +1,10 @@
 package com.example.hackernews.network
 
-import com.example.hackernews.data.entities.Story
+import com.example.hackernews.data.entities.HackerNewsItem
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,6 +13,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.*
 
+
+
 class HackerNewsRestApi {
 
     private val hackerNewsApi: HackerNewsApi
@@ -18,10 +22,15 @@ class HackerNewsRestApi {
 
     init {
 
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         val gson : Gson = GsonBuilder().registerTypeAdapter(Date::class.java, UnixDateTypeAdapter()).create()
 
         val retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
@@ -32,7 +41,7 @@ class HackerNewsRestApi {
         return hackerNewsApi.getTopStories("pretty")
     }
 
-    fun getStoryDetail(storyId: Int): Call<Story> {
+    fun getStoryDetail(storyId: Int): Call<HackerNewsItem> {
         return hackerNewsApi.getStoryDetail(storyId, "pretty")
     }
 
@@ -42,7 +51,7 @@ class HackerNewsRestApi {
         fun getTopStories(@Query("print") printParam: String): Call<List<Int>>
 
         @GET("item/{item_id}.json")
-        fun getStoryDetail(@Path("item_id") itemId: Int, @Query("print") printParam: String): Call<Story>
+        fun getStoryDetail(@Path("item_id") itemId: Int, @Query("print") printParam: String): Call<HackerNewsItem>
 
     }
 }

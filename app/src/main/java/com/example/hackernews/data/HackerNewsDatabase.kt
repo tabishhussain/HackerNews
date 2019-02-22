@@ -5,14 +5,14 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
-import com.example.hackernews.data.dao.StoryDao
-import com.example.hackernews.data.entities.Story
+import com.example.hackernews.data.dao.HackerNewsItemDao
+import com.example.hackernews.data.entities.HackerNewsItem
 
-@Database(entities = arrayOf(Story::class), version = 1)
+@Database(entities = arrayOf(HackerNewsItem::class), version = 1)
 @TypeConverters(Converters::class)
 abstract class HackerNewsDatabase : RoomDatabase() {
 
-    abstract fun storyDao(): StoryDao
+    abstract fun storyDao(): HackerNewsItemDao
 
     companion object {
 
