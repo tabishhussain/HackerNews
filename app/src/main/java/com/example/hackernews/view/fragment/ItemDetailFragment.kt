@@ -33,7 +33,7 @@ class ItemDetailFragment : Fragment(), RecyclerViewClickListener<HackerNewsItem>
             DataBindingUtil.inflate(
                 LayoutInflater.from(this.context),
                 R.layout.fragment_item_detail, container, false
-            );
+            )
         return binding.root
     }
 

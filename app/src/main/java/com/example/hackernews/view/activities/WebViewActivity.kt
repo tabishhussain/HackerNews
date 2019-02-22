@@ -14,7 +14,7 @@ import com.example.hackernews.databinding.ActivityWebViewBinding
 
 class WebViewActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityWebViewBinding;
+    private lateinit var binding: ActivityWebViewBinding
 
     companion object {
         const val EXTRA_URL = "extra_url"

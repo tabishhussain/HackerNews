@@ -8,7 +8,7 @@ import android.content.Context
 import com.example.hackernews.data.dao.HackerNewsItemDao
 import com.example.hackernews.data.entities.HackerNewsItem
 
-@Database(entities = arrayOf(HackerNewsItem::class), version = 1)
+@Database(entities = [HackerNewsItem::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class HackerNewsDatabase : RoomDatabase() {
 

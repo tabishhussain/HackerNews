@@ -17,10 +17,6 @@ class TopStoriesViewModel(application: Application) : AndroidViewModel(applicati
         return hackerNewsItemRepository.fetchTopHackerNews(forceRefresh)
     }
 
-    fun fetchStoryDetail(storyId: Int) {
-        return hackerNewsItemRepository.fetchStoryDetail(storyId)
-    }
-
     fun isLoading(): MutableLiveData<Boolean> {
         return hackerNewsItemRepository.isLoading
     }

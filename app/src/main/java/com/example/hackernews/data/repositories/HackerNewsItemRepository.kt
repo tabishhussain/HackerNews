@@ -23,7 +23,7 @@ class HackerNewsItemRepository(private val context: Context) {
     private val hackerNewsDataBase: HackerNewsDatabase = HackerNewsDatabase.getDatabase(context)
     private val hackerNewsItemDao: HackerNewsItemDao
     private val topStories: LiveData<List<HackerNewsItem>>
-    public val isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         hackerNewsItemDao = hackerNewsDataBase.storyDao()
