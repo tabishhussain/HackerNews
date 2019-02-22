@@ -48,13 +48,13 @@ class TopStoriesAdapter(
                 String.format("$comments Comments | ${story.time?.let { CommonUtils.getTimeAgo(it) }} | by ${story.by}")
 
             holder.binding.root.setOnClickListener { recyclerClickListener.onItemClick(story) }
-            setViewVisibilities(holder.binding, false)
             holder.binding.storyTypeIndicator.setBackgroundColor(
                 context.getColor(
                     if (TextUtils.isEmpty(story.url))
                         android.R.color.holo_green_dark else android.R.color.holo_blue_dark
                 )
             )
+            setViewVisibilities(holder.binding, false)
         } else if (!alreadyRequestedItem.contains(story.id)) {
             hackerNewsItemRepository.fetchStoryDetail(story.id)
             alreadyRequestedItem.add(story.id)
@@ -71,11 +71,13 @@ class TopStoriesAdapter(
         if (loading) {
             binding.score.visibility = View.INVISIBLE
             binding.info.visibility = View.INVISIBLE
+            binding.storyTypeIndicator.visibility = View.INVISIBLE
             binding.progressBar.visibility = View.VISIBLE
         } else {
             binding.score.visibility = View.VISIBLE
             binding.info.visibility = View.VISIBLE
-            binding.progressBar.visibility = View.INVISIBLE
+            binding.storyTypeIndicator.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
         }
     }
 
